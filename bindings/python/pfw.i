@@ -81,10 +81,14 @@ public:
     void setLogger(ILogger* pLogger);
 
     core::criterion::CriterionInterface*
-    createExclusiveCriterion(const std::string& name);
+    createExclusiveCriterion(const std::string& name,
+                             const core::criterion::CriterionInterface::Values& values,
+                             std::string& error);
 
     core::criterion::CriterionInterface*
-    createInclusiveCriterion(const std::string& name);
+    createInclusiveCriterion(const std::string& name,
+                             const core::criterion::CriterionInterface::Values& values,
+                             std::string& error);
 
     core::criterion::CriterionInterface*
     getSelectionCriterion(const std::string& name);
@@ -212,9 +216,6 @@ public:
     virtual void setCriterionState(int iState) = 0;
     virtual int getCriterionState() const = 0;
     virtual std::string getCriterionName() const = 0;
-    virtual bool addValuePair(int numericalValue,
-                              const std::string& literalValue,
-                              std::string& error) = 0;
     virtual bool getNumericalValue(const std::string& literalValue, int& numericalValue) const = 0;
     virtual bool getLiteralValue(int numericalValue, std::string& literalValue) const = 0;
     virtual std::string getFormattedState() const = 0;
