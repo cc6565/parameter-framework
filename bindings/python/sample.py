@@ -48,11 +48,9 @@ pfw = PyPfw.ParameterFramework(sys.argv[1])
 mylogger = MyLogger()
 pfw.setLogger(mylogger);
 
-moodType = pfw.createSelectionCriterionType(False)
-for numerical, literal in enumerate(["mad", "sad", "glad"]):
-    moodType.addValuePair(numerical, literal)
-
-mood = pfw.createSelectionCriterion("Mood", moodType)
+mood, error = pfw.createExclusiveCriterion("Mood", ("mad", "sad", "glad"))
+if not mood:
+    print("Error while creating mood criterion: {}".format(error))
 
 ok, error = pfw.start()
 if not ok:

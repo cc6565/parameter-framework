@@ -46,6 +46,8 @@
 
 %include "std_string.i"
 %include "std_vector.i"
+%include "std_list.i"
+%include "std_set.i"
 %include "typemaps.i"
 
 // We need to tell SWIG that std::vector<std::string> is a vector of strings
@@ -53,9 +55,20 @@ namespace std {
     %template(StringVector) vector<string>;
 }
 
+// In the same way, we need to tell SWIG that std::list<std::string> (aka a Criterion Value)
+// is a map with string as key and integer as value
+namespace std {
+    %template(CriterionValues) list<string>;
+}
+// and std::set<std::string> (aka Criterion State) is a set of integer
+namespace std {
+    %template(CriterionState) set<string>;
+}
+
 // Tells swig that 'std::string& strError' must be treated as output parameters
 // TODO: make it return a tuple instead of a list
 %apply std::string &OUTPUT { std::string& strError };
+%apply std::string &OUTPUT { std::string& error };
 
 // Automatic python docstring generation
 // FIXME: because of the typemap above, the output type is wrong for methods
@@ -212,6 +225,10 @@ class Criterion
 %}
 
 public:
+    typedef std::string Value ;
+    typedef std::list<Value> Values;
+    typedef std::set<Value> State;
+
     virtual bool setState(const Criterion::State& state, std::string& error) = 0;
     virtual Criterion::State getState() const = 0;
     virtual std::string getName() const = 0;
