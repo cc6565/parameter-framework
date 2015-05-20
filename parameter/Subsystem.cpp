@@ -104,6 +104,8 @@ bool CSubsystem::needResync(bool bClear)
 // From IXmlSink
 bool CSubsystem::fromXml(const CXmlElement& xmlElement, CXmlSerializingContext& serializingContext)
 {
+    setDescription(getXmlDescriptionAttribute(xmlElement));
+
     // Context
     CXmlParameterSerializingContext& parameterBuildContext = static_cast<CXmlParameterSerializingContext&>(serializingContext);
 

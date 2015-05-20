@@ -76,8 +76,9 @@ bool CTypeElement::hasMappingData() const
 // Element properties
 void CTypeElement::showProperties(std::string& strResult) const
 {
-    (void)strResult;
-    // Prevent base from being called in that context!
+    showDescriptionProperty(strResult);
+    // Prevent base from being called from the Parameter Type context.
+
 }
 
 void CTypeElement::populate(CElement* pElement) const
