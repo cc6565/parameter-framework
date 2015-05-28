@@ -90,8 +90,7 @@ public:
                              const core::criterion::CriterionInterface::Values& values,
                              std::string& error);
 
-    core::criterion::CriterionInterface*
-    getSelectionCriterion(const std::string& name);
+    core::criterion::CriterionInterface* getCriterion(const std::string& name);
 
     // Configuration application
     void applyConfigurations();
@@ -215,7 +214,7 @@ class CriterionInterface
 public:
     virtual bool setState(const CriterionInterface::State& state, std::string& error) = 0;
     virtual CriterionInterface::State getState() const = 0;
-    virtual std::string getCriterionName() const = 0;
+    virtual std::string getName() const = 0;
     virtual std::string getFormattedState() const = 0;
     virtual bool isInclusive() const = 0;
 
