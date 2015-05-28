@@ -216,8 +216,6 @@ public:
     virtual bool setState(const CriterionInterface::State& state, std::string& error) = 0;
     virtual CriterionInterface::State getState() const = 0;
     virtual std::string getCriterionName() const = 0;
-    virtual bool getNumericalValue(const std::string& literalValue, int& numericalValue) const = 0;
-    virtual bool getLiteralValue(int numericalValue, std::string& literalValue) const = 0;
     virtual std::string getFormattedState() const = 0;
     virtual bool isInclusive() const = 0;
 
