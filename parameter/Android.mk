@@ -31,16 +31,6 @@ LOCAL_PATH := $(call my-dir)
 ####################
 # Common definitions
 
-common_copy_headers_to := parameter
-
-common_copy_headers := \
-        include/ParameterMgrLoggerForward.h \
-        include/ParameterMgrPlatformConnector.h \
-        include/ParameterMgrFullConnector.h \
-        include/SelectionCriterionTypeInterface.h \
-        include/SelectionCriterionInterface.h \
-        include/ParameterHandle.h
-
 common_src_files := \
         AreaConfiguration.cpp \
         ArrayParameter.cpp \
@@ -95,12 +85,10 @@ common_src_files := \
         PathNavigator.cpp \
         PluginLocation.cpp \
         RuleParser.cpp \
-        SelectionCriteria.cpp \
-        SelectionCriteriaDefinition.cpp \
-        SelectionCriterion.cpp \
-        SelectionCriterionLibrary.cpp \
+        criterion/src/Criteria.cpp \
+        criterion/src/Criterion.cpp \
+        criterion/src/InclusiveCriterion.cpp \
         SelectionCriterionRule.cpp \
-        SelectionCriterionType.cpp \
         SimulatedBackSynchronizer.cpp \
         StringParameter.cpp \
         StringParameterType.cpp \
@@ -124,9 +112,12 @@ common_cflags := \
         -Wall \
         -Werror \
         -Wextra \
-        -Wno-unused-parameter
+        -Wno-unused-parameter \
+        -Wc++11-extensions \
+        -Woverloaded-virtual \
 
 common_c_includes := \
+    $(LOCAL_PATH)/criterion/include \
     $(LOCAL_PATH)/include/ \
     $(LOCAL_PATH)/log/include/ \
     $(LOCAL_PATH)/../utility/ \
@@ -139,9 +130,6 @@ common_shared_libraries := libicuuc
 # Target build
 
 include $(CLEAR_VARS)
-
-LOCAL_COPY_HEADERS_TO := $(common_copy_headers_to)
-LOCAL_COPY_HEADERS := $(common_copy_headers)
 
 LOCAL_CFLAGS := $(common_cflags)
 
@@ -158,17 +146,16 @@ LOCAL_STATIC_LIBRARIES := libxmlserializer libpfw_utility libxml2
 
 LOCAL_REQUIRED_MODULES := libremote-processor
 
-LOCAL_CLANG := false
-include external/stlport/libstlport.mk
+LOCAL_CPPFLAGS := --std=c++11 -fexceptions
+LOCAL_CLANG := true
+#include external/stlport/libstlport.mk
+include external/libcxx/libcxx.mk
 include $(BUILD_SHARED_LIBRARY)
 
 ##############################
 # Host build
 
 include $(CLEAR_VARS)
-
-LOCAL_COPY_HEADERS_TO := $(common_copy_headers_to)
-LOCAL_COPY_HEADERS := $(common_copy_headers)
 
 LOCAL_CFLAGS := $(common_cflags) -O0 -ggdb
 
@@ -186,7 +173,10 @@ LOCAL_STATIC_LIBRARIES := libxmlserializer_host libpfw_utility_host libxml2
 
 LOCAL_LDLIBS += -ldl
 
-LOCAL_CLANG := false
+LOCAL_CPPFLAGS := --std=c++11 -fexceptions
+LOCAL_CLANG := true
+include external/libcxx/libcxx.mk
+
 include $(BUILD_HOST_SHARED_LIBRARY)
 
 ################################
@@ -200,7 +190,6 @@ LOCAL_MODULE_OWNER := intel
 LOCAL_EXPORT_C_INCLUDE_DIRS := \
     $(LOCAL_PATH) \
     $(LOCAL_PATH)/log/include
-
 
 LOCAL_STATIC_LIBRARIES := \
     libxmlserializer \
@@ -217,11 +206,41 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := $(common_module)_includes_host
 LOCAL_MODULE_OWNER := intel
 
-LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)
+LOCAL_EXPORT_C_INCLUDE_DIRS := \
+    $(LOCAL_PATH) \
+    $(LOCAL_PATH)/log/include
 
 LOCAL_STATIC_LIBRARIES := \
     libxmlserializer_host \
     libpfw_utility_host \
     libxml2
+
+include $(BUILD_HOST_STATIC_LIBRARY)
+
+################################
+# Export includes for cliens (Target build)
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := $(common_module)_client_includes
+LOCAL_MODULE_OWNER := intel
+
+LOCAL_EXPORT_C_INCLUDE_DIRS := \
+    $(LOCAL_PATH)/include \
+    $(LOCAL_PATH)/criterion/include \
+
+include $(BUILD_STATIC_LIBRARY)
+
+################################
+# Export includes for clients (Host build)
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := $(common_module)_client_includes_host
+LOCAL_MODULE_OWNER := intel
+
+LOCAL_EXPORT_C_INCLUDE_DIRS := \
+    $(LOCAL_PATH)/include \
+    $(LOCAL_PATH)/criterion/include \
 
 include $(BUILD_HOST_STATIC_LIBRARY)

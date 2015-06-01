@@ -45,7 +45,7 @@ LOCAL_CLANG := false
 LOCAL_32_BIT_ONLY := true
 
 LOCAL_SHARED_LIBRARIES := libparameter_host
-LOCAL_STATIC_LIBRARIES := libxmlserializer_host
+LOCAL_STATIC_LIBRARIES := libxmlserializer_host libparameter_client_includes_host
 
 LOCAL_C_INCLUDES := \
     prebuilts/python/linux-x86/2.7.5/include/python2.7 \
@@ -86,6 +86,10 @@ $(generated-sources-dir)/pfw_wrap.cxx: $(LOCAL_PATH)/pfw.i
 		-Iprebuilts/misc/common/swig/include/2.0.11/python/ \
 		-Iprebuilts/misc/common/swig/include/2.0.11/ \
 		-Wall -Werror -v -python -c++ -outdir $(HOST_LIBRARY_PATH)/ -o $@ $^
+
+LOCAL_CPPFLAGS := --std=c++11 -fexceptions
+LOCAL_CLANG := true
+include external/libcxx/libcxx.mk
 
 include $(BUILD_HOST_SHARED_LIBRARY)
 

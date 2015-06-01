@@ -44,7 +44,7 @@ common_cflags := \
         -Wall \
         -Werror \
         -Wextra \
-        -Wno-unused-parameter
+        -Wno-unused-parameter \
 
 #############################
 # Target build
@@ -60,8 +60,10 @@ LOCAL_MODULE_OWNER := intel
 LOCAL_MODULE_TAGS := $(common_module_tags)
 
 LOCAL_CFLAGS := $(common_cflags)
-
-include external/stlport/libstlport.mk
+LOCAL_CPPFLAGS := --std=c++11 -fexceptions
+LOCAL_CLANG := true
+#include external/stlport/libstlport.mk
+include external/libcxx/libcxx.mk
 include $(BUILD_STATIC_LIBRARY)
 
 ##############################
@@ -78,5 +80,7 @@ LOCAL_MODULE_OWNER := intel
 LOCAL_MODULE_TAGS := $(common_module_tags)
 
 LOCAL_CFLAGS := $(common_cflags)
-
+LOCAL_CPPFLAGS := --std=c++11 -fexceptions
+LOCAL_CLANG := true
+include external/libcxx/libcxx.mk
 include $(BUILD_HOST_STATIC_LIBRARY)

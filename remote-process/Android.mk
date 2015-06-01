@@ -68,7 +68,10 @@ LOCAL_SHARED_LIBRARIES := $(common_shared_libraries)
 LOCAL_STATIC_LIBRARIES := $(common_static_libraries)
 
 
-include external/stlport/libstlport.mk
+LOCAL_CPPFLAGS := -fexceptions
+LOCAL_CLANG := true
+#include external/stlport/libstlport.mk
+include external/libcxx/libcxx.mk
 include $(BUILD_EXECUTABLE)
 
 ##############################
@@ -82,8 +85,6 @@ LOCAL_MODULE := $(common_module)_host
 LOCAL_MODULE_OWNER := intel
 LOCAL_MODULE_TAGS := $(common_module_tags)
 
-LOCAL_CFLAGS := $(common_cflags)
-
 LOCAL_C_INCLUDES += \
     $(common_c_includes)
 
@@ -91,5 +92,10 @@ LOCAL_SHARED_LIBRARIES := $(foreach shared_library, $(common_shared_libraries), 
     $(shared_library)_host)
 LOCAL_STATIC_LIBRARIES := $(foreach static_library, $(common_static_libraries), \
     $(static_library)_host)
+
+LOCAL_CFLAGS := $(common_cflags)
+LOCAL_CPPFLAGS := --std=c++11 -fexceptions
+LOCAL_CLANG := true
+include external/libcxx/libcxx.mk
 
 include $(BUILD_HOST_EXECUTABLE)
